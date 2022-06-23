@@ -44,6 +44,7 @@ namespace Buttons
         private QuetionData[] quetionDatas = new QuetionData[0];
         private int questionNumber = 0;
         private QuetionData currentQuestionData;
+        private Label[] answerLabels = new Label[2];
 
         private void readCSVFromPath(string path)
         {
@@ -69,22 +70,35 @@ namespace Buttons
                 var csvPath = args[1];
                 readCSVFromPath(csvPath);
             }
+            answerLabels[0] = AnswerLeft;
+            answerLabels[1] = AnswerRight;
         }
 
         private void handleSpace()
         {
+            if (
+                Question.Text != string.Empty && (
+                    AnswerLeft.Content.ToString() == string.Empty ||
+                    AnswerRight.Content.ToString() == string.Empty ||
+                    CorrectAnswer.Content.ToString() == string.Empty
+                )
+            ) return;
+
+            Question.Text = string.Empty;
+            AnswerLeft.Content = string.Empty;
+            AnswerRight.Content = string.Empty;
+            CorrectAnswer.Content = string.Empty;
+            Last.Content = string.Empty;
+
             if (questionNumber >= quetionDatas.Length) return;
+
+            updateScore();
 
             currentQuestionData = quetionDatas[questionNumber];
 
             Question.Text = currentQuestionData.Question + " (" + currentQuestionData.Answer1 + " или " + currentQuestionData.Answer2 + ")";
 
             questionNumber++;
-
-            AnswerLeft.Content = currentQuestionData.Answer1;
-            AnswerRight.Content = currentQuestionData.Answer2;
-
-            updateScore();
         }
 
         private void updateScore()
@@ -104,11 +118,6 @@ namespace Buttons
                 try
                 {
                     //serialPort.WriteLine("red");
-                    Question.Text = string.Empty;
-                    AnswerLeft.Content = string.Empty;
-                    AnswerRight.Content = string.Empty;
-                    CorrectAnswer.Content = string.Empty;
-                    Last.Content = string.Empty;
                 }
                 catch (Exception exception)
                 {
@@ -165,14 +174,16 @@ namespace Buttons
 
         private void handleButtonPressed(string line)
         {
-            if (Int32.TryParse(line, out int buttonNumber))
+            if (currentQuestionData != null && Int32.TryParse(line, out int buttonNumber))
             {
-                int player = (buttonNumber + 1) / 2;
-                int answer = ((buttonNumber + 1) % 2) + 1;
+                int player = (buttonNumber - 1) / 2;
+                var answer = (buttonNumber + 1) % 2 == 0 ? currentQuestionData.Answer1 : currentQuestionData.Answer2;
 
                 Application.Current.Dispatcher.BeginInvoke(new Action(() => {
-                    AnswerLeft.Content = player;
-                    AnswerRight.Content = answer;
+                    if (answerLabels[player].Content == string.Empty)
+                    {
+                        answerLabels[player].Content = answer;
+                    }
                 }));
                 isFisrt = false;
             }
