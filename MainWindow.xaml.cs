@@ -117,11 +117,14 @@ namespace Buttons
                 ListEvents.Items.Insert(0, newLine);
                 try
                 {
-                    //serialPort.WriteLine("red");
+                    if (serialPort == null)
+                    {
+                        throw new Exception();
+                    }
+                    serialPort.WriteLine("red");
                 }
                 catch (Exception exception)
                 {
-                    
                     OpenPort(Ports.Items[0] as string);
                 }
 
