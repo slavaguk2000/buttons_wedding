@@ -45,6 +45,8 @@ namespace Buttons
         private int questionNumber = 0;
         private QuetionData currentQuestionData;
         private Label[] answerLabels = new Label[2];
+        private Label[] scoreLabels = new Label[2];
+        private int firstAnswer = -1;
 
         private void readCSVFromPath(string path)
         {
@@ -72,6 +74,8 @@ namespace Buttons
             }
             answerLabels[0] = AnswerLeft;
             answerLabels[1] = AnswerRight;
+            scoreLabels[0] = ScoreLeft;
+            scoreLabels[1] = ScoreRight;
         }
 
         private void handleSpace()
@@ -84,15 +88,19 @@ namespace Buttons
                 )
             ) return;
 
+            if (Question.Text != string.Empty)
+            {
+                updateScore();
+            }
+
             Question.Text = string.Empty;
             AnswerLeft.Content = string.Empty;
             AnswerRight.Content = string.Empty;
             CorrectAnswer.Content = string.Empty;
             Last.Content = string.Empty;
+            firstAnswer = -1;
 
             if (questionNumber >= quetionDatas.Length) return;
-
-            updateScore();
 
             currentQuestionData = quetionDatas[questionNumber];
 
@@ -103,8 +111,12 @@ namespace Buttons
 
         private void updateScore()
         {
-            ScoreLeft.Content = Int32.Parse(ScoreLeft.Content.ToString()) + 1;
-            ScoreRight.Content = Int32.Parse(ScoreRight.Content.ToString()) + 1;
+            for (int i = 0; i < scoreLabels.Length; i++)
+            {
+                int offset = (i == firstAnswer ? 1 : 0) + (answerLabels[i].Content.ToString() == CorrectAnswer.Content.ToString() ? 1 : -2);
+
+                scoreLabels[i].Content = Int32.Parse(scoreLabels[i].Content.ToString()) + offset;
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -181,6 +193,11 @@ namespace Buttons
             {
                 int player = (buttonNumber - 1) / 2;
                 var answer = (buttonNumber + 1) % 2 == 0 ? currentQuestionData.Answer1 : currentQuestionData.Answer2;
+
+                if (firstAnswer < 0)
+                {
+                    firstAnswer = player;
+                }
 
                 Application.Current.Dispatcher.BeginInvoke(new Action(() => {
                     if (answerLabels[player].Content == string.Empty)
