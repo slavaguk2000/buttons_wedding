@@ -40,7 +40,6 @@ namespace Buttons
     {
         private SerialPort serialPort;
         private string logs = string.Empty;
-        private bool isFisrt = true;
         private QuetionData[] quetionDatas = new QuetionData[0];
         private int questionNumber = 0;
         private QuetionData currentQuestionData;
@@ -78,6 +77,38 @@ namespace Buttons
             scoreLabels[1] = ScoreRight;
         }
 
+        private void handleColorChange()
+        {
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var correct = CorrectAnswer.Content.ToString();
+
+                if (correct == String.Empty) return;
+
+                foreach (var answerLabel in answerLabels)
+                {
+                    var current = answerLabel.Content.ToString();
+
+                    if (current != String.Empty)
+                    {
+                        answerLabel.Background = current == correct ? (Brush)(new BrushConverter().ConvertFrom("#ff00ff00")) : Brushes.Red;
+                    }
+                }
+            }));
+        }
+
+        private void handleColorClear()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                foreach (var answerLabel in answerLabels)
+                {
+                    answerLabel.Background = Brushes.Transparent;
+                }
+            }));
+        }
+
         private void handleSpace()
         {
             if (
@@ -99,6 +130,7 @@ namespace Buttons
             CorrectAnswer.Content = string.Empty;
             Last.Content = string.Empty;
             firstAnswer = -1;
+            handleColorClear();
 
             if (questionNumber >= quetionDatas.Length) return;
 
@@ -123,8 +155,6 @@ namespace Buttons
         {
             if (e.Key == Key.Space)
             {
-                isFisrt = true;
-
                 var newLine = "==";
                 ListEvents.Items.Insert(0, newLine);
                 try
@@ -141,18 +171,16 @@ namespace Buttons
                 }
 
                 handleSpace();
-            }
-
-            if (CorrectAnswer.Content.ToString() == String.Empty && currentQuestionData != null)
+            } else if (CorrectAnswer.Content.ToString() == String.Empty && currentQuestionData != null)
             {
                 if (e.Key == Key.D1)
                 {
                     CorrectAnswer.Content = currentQuestionData.Answer1;
-                }
-
-                if (e.Key == Key.D2)
+                    handleColorChange();
+                } else if (e.Key == Key.D2)
                 {
                     CorrectAnswer.Content = currentQuestionData.Answer2;
+                    handleColorChange();
                 }
             }
         }
@@ -200,12 +228,13 @@ namespace Buttons
                 }
 
                 Application.Current.Dispatcher.BeginInvoke(new Action(() => {
-                    if (answerLabels[player].Content == string.Empty)
+                    if (answerLabels[player].Content.ToString() == string.Empty)
                     {
                         answerLabels[player].Content = answer;
                     }
                 }));
-                isFisrt = false;
+
+                handleColorChange();
             }
         }
 

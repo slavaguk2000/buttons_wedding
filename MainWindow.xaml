@@ -13,8 +13,8 @@
     <Grid>
         <ComboBox x:Name="Ports" HorizontalAlignment="Left" Height="23" Margin="10,6,0,0" VerticalAlignment="Top" Width="110"/>
         <TextBlock x:Name="Question" TextWrapping="Wrap" FontSize="100" Padding="0" HorizontalAlignment="Center" Margin="50,50,50,50" TextAlignment="Center"></TextBlock>
-        <Label x:Name="AnswerLeft" Content="" FontSize="100" Padding="0" HorizontalAlignment="Left" Margin="250,0,0,0" Width="700" VerticalAlignment="Center"/>
-        <Label x:Name="AnswerRight" Content="" FontSize="100" Padding="0" HorizontalAlignment="Right" Margin="0,0,250,0" Width="700" HorizontalContentAlignment="Right" VerticalAlignment="Center"/>
+        <Label x:Name="AnswerLeft" Content="" FontSize="100" Padding="0" HorizontalAlignment="Left" Margin="200,0,0,0" Width="700" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+        <Label x:Name="AnswerRight" Content="" FontSize="100" Padding="0" HorizontalAlignment="Right" Margin="0,0,200,0" Width="700" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
         <Label x:Name="CorrectAnswer" Content="" FontSize="100" Padding="0" HorizontalAlignment="Center" Width="700" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="0,400,0,0"/>
         <Label x:Name="ScoreLeft" Content="0" FontSize="100" Padding="0" HorizontalAlignment="Left" Margin="250,0,0,50" Width="700" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"/>
         <Label x:Name="ScoreRight" Content="0" FontSize="100" Padding="0" HorizontalAlignment="Right" Margin="0,0,250,50" Width="700" HorizontalContentAlignment="Right" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"/>
